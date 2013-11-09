@@ -7,6 +7,7 @@ Parser::Parser(std::istream& input, std::ostream& output)
   getToken();
   m_parserError = false;
   m_totalErrors = 0;
+  m_code = new Code();
 }
 
 Parser::~Parser()
@@ -23,7 +24,7 @@ void Parser::parse()
   if(totalErrors())
     std::cerr << std::endl << "Number of errors: " << totalErrors() << "." << std::endl;
   else {
-    //m_code->print();
+    m_code->print();
   }
 }
 
