@@ -1,0 +1,13 @@
+program example;
+var i,j : integer;
+
+begin
+        i := 1;
+        j := -1;
+
+        if (i > 0) then
+          i := (1 - j*3)
+        else 
+           i := i + 1;
+	  writeln(i)
+end.
