@@ -10,7 +10,7 @@
 
 Quadruple::Quadruple()
 {
-  m_op = op_NONE;
+  m_op = cd_NOOP;
   m_arg1 = NULL;
   m_arg2 = NULL;
   m_result = NULL;
