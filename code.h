@@ -69,7 +69,7 @@ static const std::string CodeTrue = "1";
 // Use this constant when generating new labels
 static const std::string CodeLabelPrefix = "lab";
 // Use this constant when generating new temporary variable names
-static const std::string CodeTempVarPrefix = "t";  
+static const std::string CodeTempVarPrefix = "t";
 
 class Code {
 private:

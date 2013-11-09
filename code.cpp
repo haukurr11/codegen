@@ -45,6 +45,9 @@ Code::Code()
 
 Code::~Code()
 {
+  delete m_arg1;
+  delete m_arg2;
+  delete m_result;
 }
 
 void Code::generate(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result)
@@ -78,13 +81,13 @@ void Code::generateVariables(EntryList& entrylist)
 std::string Code::newLabel()
 {
   m_labelCounter++;
-  return "L" + m_labelCounter;
+  return CodeLabelPrefix + m_labelCounter;
 }
 
 std::string Code::newTemp()
 {
   m_tempCounter++;
-  return "t" + m_tempCounter;
+  return CodeTempVarPrefix + m_tempCounter;
 }
 
 void Code::print()
