@@ -512,6 +512,7 @@ SymbolTableEntry* Parser::parseTermPrime(SymbolTableEntry* prevEntry)
   // else epsilon
   return NULL;
 }
+
 SymbolTableEntry* Parser::parseFactor()
 {
   if(isNext(tc_NUMBER))
