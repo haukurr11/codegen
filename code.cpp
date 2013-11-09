@@ -87,7 +87,7 @@ std::string Code::newTemp()
 {
   m_tempCounter++;
   std::stringstream ss;
-  ss << CodeLabelPrefix << m_tempCounter;
+  ss << CodeTempVarPrefix << m_tempCounter;
   return ss.str();
 }
 
