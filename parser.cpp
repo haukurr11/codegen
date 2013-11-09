@@ -22,8 +22,9 @@ void Parser::parse()
   parseProgram();
   if(totalErrors())
     std::cerr << std::endl << "Number of errors: " << totalErrors() << "." << std::endl;
-  else
-    std::cerr << "No errors" << std::endl;
+  else {
+    //m_code->print();
+  }
 }
 
 SymbolTable* Parser::getSymbolTable()
@@ -515,27 +516,33 @@ SymbolTableEntry* Parser::parseTermPrime(SymbolTableEntry* prevEntry)
 
 SymbolTableEntry* Parser::parseFactor()
 {
+  SymbolTableEntry *factor = NULL;
+  SymbolTableEntry *resultEntry = m_symbolTable->lookup(CodeFalse);
   if(isNext(tc_NUMBER))
   {
+    resultEntry = m_currentToken->getSymTabEntry();
     match(tc_NUMBER);
   }
   else if(isNext(tc_LPAREN))
   {
     match(tc_LPAREN);
-    parseExpression();
+    resultEntry = parseExpression();
     match(tc_RPAREN);                Recover(factorSync);
   }
   else if(isNext(tc_NOT))
   {
     match(tc_NOT);
-    parseFactor();
+    factor = parseFactor();
+    resultEntry = newTemp();
+    m_code->generate(cd_NOT,factor,NULL,resultEntry);
   }
   else //if(isNext(tc_ID))
   {
+    factor = m_currentToken->getSymTabEntry();
     match(tc_ID);                  Recover(factorSync);
-    parseFactorPrime(NULL);
+    resultEntry = parseFactorPrime(NULL);
   }
-  return NULL;
+  return resultEntry;
 }
 
 SymbolTableEntry* Parser::parseFactorPrime(SymbolTableEntry* prevEntry)
@@ -560,14 +567,18 @@ void Parser::parseSign()
 
 SymbolTableEntry* Parser::newTemp()
 {
-  // Implement
-  return NULL;
+  std::string name = m_code->newTemp();
+  SymbolTableEntry* entry = m_symbolTable->insert(name);
+  m_code->generate(cd_VAR,NULL,NULL,entry);
+  return entry;
 }
 
 SymbolTableEntry* Parser::newLabel()
 {
-  // Implement
-  return NULL;
+  std::string name = m_code->newLabel();
+  SymbolTableEntry* entry = m_symbolTable->insert(name);
+  m_code->generate(cd_LABEL,NULL,NULL,entry);
+  return entry;
 }
 
 CodeOp Parser::opToCode(OpType op)

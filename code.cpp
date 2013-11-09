@@ -7,6 +7,7 @@
 // **************************************************************
 
 #include "code.h"
+#include <sstream>
 
 Quadruple::Quadruple()
 {
@@ -45,15 +46,11 @@ Code::Code()
 
 Code::~Code()
 {
-  delete m_arg1;
-  delete m_arg2;
-  delete m_result;
 }
 
 void Code::generate(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result)
 {
-  Quadruple quad(op,arg1,arg2,result);
-  m_qList.push_back(quad);
+  m_qList.push_back(Quadruple(op,arg1,arg2,result));
 }
 
 void Code::generateCall(SymbolTableEntry* entry, EntryList& eList)
@@ -81,13 +78,17 @@ void Code::generateVariables(EntryList& entrylist)
 std::string Code::newLabel()
 {
   m_labelCounter++;
-  return CodeLabelPrefix + m_labelCounter;
+  std::stringstream ss;
+  ss << CodeLabelPrefix << m_labelCounter;
+  return ss.str();
 }
 
 std::string Code::newTemp()
 {
   m_tempCounter++;
-  return CodeTempVarPrefix + m_tempCounter;
+  std::stringstream ss;
+  ss << CodeLabelPrefix << m_tempCounter;
+  return ss.str();
 }
 
 void Code::print()
