@@ -7,34 +7,45 @@
 // **************************************************************
 
 #include "code.h"
+#include <iostream>
+using namespace std;
+
 Quadruple::Quadruple()
 {
-
+  m_arg1 = NULL;
+  m_arg2 = NULL;
+  m_result = NULL;
 }
 
 Quadruple::Quadruple(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result)
 {
-
+  m_op = op;
+  m_arg1 = arg1;
+  m_arg2 = arg2;
+  m_result = result;
 }
 
 CodeOp Quadruple::getOp()
 {
-
+  return m_op;
 }
 
 void Quadruple::set(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result)
 {
-
+  m_op = op;
+  m_arg1 = arg1;
+  m_arg2 = arg2;
+  m_result = result;
 }
 
 Code::Code()
 {
-
+  m_tempCounter = 0;
+  m_labelCounter = 0;
 }
 
 Code::~Code()
 {
-
 }
 
 void Code::generate(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, SymbolTableEntry* result)
@@ -66,6 +77,7 @@ std::string Code::newTemp()
 {
 
 }
+
 void Code::print()
 {
 
