@@ -1,2 +1,2 @@
 flex compiler.lex
-g++ *.cpp -o parser
+g++ *.cpp -o codegen

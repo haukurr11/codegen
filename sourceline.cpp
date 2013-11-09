@@ -1,4 +1,6 @@
 #include "sourceline.h"
+#include <stdio.h>
+
 
 int LineError::getColumn()
 {
