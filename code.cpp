@@ -7,11 +7,10 @@
 // **************************************************************
 
 #include "code.h"
-#include <iostream>
-using namespace std;
 
 Quadruple::Quadruple()
 {
+  m_op = op_NONE;
   m_arg1 = NULL;
   m_arg2 = NULL;
   m_result = NULL;
