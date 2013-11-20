@@ -187,6 +187,8 @@ void Parser::parseProgram()
 void Parser::parseIdentifierList(EntryList& idList)
 {
   match(tc_ID);                  Recover(identifierListSync);
+  SymbolTableEntry* entry = m_currentToken->getSymTabEntry();
+  idList.push_back(entry);
   parseIdentifierListPrime(idList);
 }
 
@@ -196,6 +198,8 @@ void Parser::parseIdentifierListPrime(EntryList& idList)
   {
     match(tc_COMMA);
     match(tc_ID);                Recover(identifierListSync);
+    SymbolTableEntry* entry = m_currentToken->getSymTabEntry();
+    idList.push_back(entry);
     parseIdentifierListPrime(idList);
   }
   // else epsilon
@@ -212,6 +216,7 @@ void Parser::parseDeclarations()
     parseType();
     match(tc_SEMICOL);              Recover(declarationsSync);
     parseDeclarations();
+    m_code->generateVariables(variables);
   }
   // else epsilon
 }
@@ -387,13 +392,13 @@ void Parser::parseStatementPrime(SymbolTableEntry* prevEntry)
 {
   if(isNext(tc_LBRACKET) || isNext(tc_ASSIGNOP))
   {
-    parseVariablePrime(NULL);
+    parseVariablePrime(prevEntry);
     match(tc_ASSIGNOP);
     parseExpression();
   }
   else
   {
-    parseProcedureStatementPrime(NULL);
+    parseProcedureStatementPrime(prevEntry);
   }
 }
 
@@ -413,7 +418,7 @@ SymbolTableEntry* Parser::parseVariablePrime(SymbolTableEntry* prevEntry)
     match(tc_RBRACKET);
   }
   // else epsilon
-  return NULL;
+  return prevEntry;
 }
 
 void Parser::parseProcedureStatement()
@@ -427,7 +432,7 @@ void Parser::parseProcedureStatementPrime(SymbolTableEntry* prevEntry)
   if(isNext(tc_LPAREN))
   {
     match(tc_LPAREN);
-    parseExpressionList(NULL);
+    parseExpressionList(prevEntry);
     match(tc_RPAREN);
   }
 }
@@ -465,7 +470,7 @@ SymbolTableEntry* Parser::parseExpressionPrime(SymbolTableEntry* prevEntry)
     parseSimpleExpression();
   }
   // else epsilon
-  return NULL;
+  return prevEntry;
 }
 
 SymbolTableEntry* Parser::parseSimpleExpression()
@@ -498,9 +503,9 @@ SymbolTableEntry* Parser::parseSimpleExpressionPrime(SymbolTableEntry* prevEntry
 
 SymbolTableEntry* Parser::parseTerm()
 {
-  parseFactor();
-  parseTermPrime(NULL);
-  return NULL;
+  SymbolTableEntry* factor = parseFactor();
+  parseTermPrime(factor);
+  return factor;
 }
 
 SymbolTableEntry* Parser::parseTermPrime(SymbolTableEntry* prevEntry)
@@ -509,10 +514,10 @@ SymbolTableEntry* Parser::parseTermPrime(SymbolTableEntry* prevEntry)
   {
     match(tc_MULOP);
     parseFactor();
-    parseTermPrime(NULL);
+    parseTermPrime(prevEntry);
   }
   // else epsilon
-  return NULL;
+  return prevEntry;
 }
 
 SymbolTableEntry* Parser::parseFactor()
@@ -551,14 +556,14 @@ SymbolTableEntry* Parser::parseFactorPrime(SymbolTableEntry* prevEntry)
   if(isNext(tc_LPAREN))
   {
     match(tc_LPAREN);
-    parseExpressionList(NULL);
+    parseExpressionList(prevEntry);
     match(tc_RPAREN);                Recover(factorSync);
   }
   else
   {
-    parseVariablePrime(NULL);
+    parseVariablePrime(prevEntry);
   }
-  return NULL;
+  return prevEntry;
 }
 
 void Parser::parseSign()
