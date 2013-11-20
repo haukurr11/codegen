@@ -541,7 +541,7 @@ SymbolTableEntry* Parser::parseFactor()
   {
     factor = m_currentToken->getSymTabEntry();
     match(tc_ID);                  Recover(factorSync);
-    resultEntry = parseFactorPrime(NULL);
+    resultEntry = parseFactorPrime(factor);
   }
   return resultEntry;
 }
