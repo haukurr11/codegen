@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "types.h"
 
 Parser::Parser(std::istream& input, std::ostream& output)
 {
@@ -383,8 +384,9 @@ void Parser::parseStatement()
   }
   else //(isNext(tc_ID))
   {
+    SymbolTableEntry* entry = m_currentToken->getSymTabEntry();
     match(tc_ID);                  Recover(statementSync);
-    parseStatementPrime(NULL);
+    parseStatementPrime(entry);
   }
 }
 
@@ -394,7 +396,8 @@ void Parser::parseStatementPrime(SymbolTableEntry* prevEntry)
   {
     parseVariablePrime(prevEntry);
     match(tc_ASSIGNOP);
-    parseExpression();
+    SymbolTableEntry* entry = parseExpression();
+    m_code->generate(cd_ASSIGN,entry,NULL,prevEntry);
   }
   else
   {
@@ -457,9 +460,9 @@ void Parser::parseExpressionListPrime(EntryList& expList)
 
 SymbolTableEntry* Parser::parseExpression()
 {
-  parseSimpleExpression();
-  parseExpressionPrime(NULL);
-  return NULL;
+  SymbolTableEntry* resultEntry = parseSimpleExpression();
+  resultEntry = parseExpressionPrime(resultEntry);
+  return resultEntry;
 }
 
 SymbolTableEntry* Parser::parseExpressionPrime(SymbolTableEntry* prevEntry)
@@ -475,37 +478,49 @@ SymbolTableEntry* Parser::parseExpressionPrime(SymbolTableEntry* prevEntry)
 
 SymbolTableEntry* Parser::parseSimpleExpression()
 {
+  SymbolTableEntry* resultEntry = NULL;
   if(isNext(tc_ADDOP))
   {
     parseSign();
-    parseTerm();
-    parseSimpleExpressionPrime(NULL);
+    SymbolTableEntry* term = parseTerm();
+    resultEntry = newTemp();
+    CodeOp co;
+    m_code->generate(cd_UMINUS,term,NULL,resultEntry);
+    parseSimpleExpressionPrime(resultEntry);
   }
   else
   {
-    parseTerm();
-    parseSimpleExpressionPrime(NULL);
+    resultEntry = parseTerm();
+    resultEntry = parseSimpleExpressionPrime(resultEntry);
   }
-  return NULL;
+  return resultEntry;
 }
 
 SymbolTableEntry* Parser::parseSimpleExpressionPrime(SymbolTableEntry* prevEntry)
 {
+  SymbolTableEntry* resultEntry = prevEntry;
   if(isNext(tc_ADDOP))
   {
+    CodeOp co;
+    if(m_currentToken->getOpType() == op_PLUS)
+      co = cd_ADD;
+    else if(m_currentToken->getOpType() == op_MINUS)
+      co = cd_SUB;
     match(tc_ADDOP);
-    parseTerm();
-    parseSimpleExpressionPrime(NULL);
+    SymbolTableEntry* term = parseTerm();
+    SymbolTableEntry* temp = newTemp();
+    resultEntry = parseSimpleExpressionPrime(temp);
+    m_code->generate(co,prevEntry,term,temp);
   }
   // else epsilon
-  return NULL;
+  return resultEntry;
 }
 
 SymbolTableEntry* Parser::parseTerm()
 {
-  SymbolTableEntry* factor = parseFactor();
-  parseTermPrime(factor);
-  return factor;
+  SymbolTableEntry* resultEntry = parseFactor();
+  resultEntry = parseTermPrime(resultEntry);
+  return resultEntry;
 }
 
 SymbolTableEntry* Parser::parseTermPrime(SymbolTableEntry* prevEntry)
@@ -513,8 +528,11 @@ SymbolTableEntry* Parser::parseTermPrime(SymbolTableEntry* prevEntry)
   if(isNext(tc_MULOP))
   {
     match(tc_MULOP);
-    parseFactor();
-    parseTermPrime(prevEntry);
+    SymbolTableEntry* factor = parseFactor();
+    parseTermPrime(factor);
+    SymbolTableEntry* temp = newTemp();
+    m_code->generate(cd_MULT,prevEntry,factor,temp);
+    prevEntry = temp;
   }
   // else epsilon
   return prevEntry;
