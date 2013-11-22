@@ -178,10 +178,14 @@ void Parser::parseProgram()
 {
   match(tc_PROGRAM);                Recover(programSync);
   match(tc_ID);                  Recover(programSync);
+  SymbolTableEntry* pname = m_currentToken->getSymTabEntry();
   match(tc_SEMICOL);                Recover(programSync);
   parseDeclarations();
+  m_code->generate(cd_GOTO,NULL,NULL,pname);
+  m_code->generate(cd_LABEL,NULL,NULL,pname);
   parseSubprogramDeclarations();
   parseCompoundStatement();
+  m_code->generate(cd_RETURN,NULL,NULL,NULL);
   match(tc_DOT);                  Recover(programSync);
 }
 
@@ -373,7 +377,11 @@ void Parser::parseStatement()
     match(tc_THEN);                  Recover(statementSync);
     parseStatement();
     match(tc_ELSE);                  Recover(statementSync);
+    m_code->generate(cd_LABEL, NULL, NULL, newLabel());
     parseStatement();
+    SymbolTableEntry* jump = newLabel();
+    m_code->generate(cd_GOTO, NULL, NULL,jump);
+    m_code->generate(cd_LABEL, NULL, NULL, jump);
   }
   else if(isNext(tc_WHILE))
   {
@@ -426,8 +434,9 @@ SymbolTableEntry* Parser::parseVariablePrime(SymbolTableEntry* prevEntry)
 
 void Parser::parseProcedureStatement()
 {
+  SymbolTableEntry* entry = m_currentToken->getSymTabEntry();
   match(tc_ID);
-  parseProcedureStatementPrime(NULL);
+  parseProcedureStatementPrime(entry);
 }
 
 void Parser::parseProcedureStatementPrime(SymbolTableEntry* prevEntry)
@@ -443,8 +452,9 @@ void Parser::parseProcedureStatementPrime(SymbolTableEntry* prevEntry)
 void Parser::parseExpressionList(SymbolTableEntry* prevEntry)
 {
   EntryList expressions;
-  parseExpression();
+  expressions.push_back(parseExpression());
   parseExpressionListPrime(expressions);
+  m_code->generateCall(prevEntry,expressions);
 }
 
 void Parser::parseExpressionListPrime(EntryList& expList)
@@ -452,7 +462,7 @@ void Parser::parseExpressionListPrime(EntryList& expList)
   if(isNext(tc_COMMA))
   {
     match(tc_COMMA);
-    parseExpression();
+    expList.push_back(parseExpression());
     parseExpressionListPrime(expList);
   }
   // else epsilon
@@ -469,8 +479,21 @@ SymbolTableEntry* Parser::parseExpressionPrime(SymbolTableEntry* prevEntry)
 {
   if(isNext(tc_RELOP))
   {
+    SymbolTableEntry *f = m_symbolTable->lookup(CodeFalse);
+    SymbolTableEntry *t = m_symbolTable->lookup(CodeTrue);
+    CodeOp codeop = opToCode(m_currentToken->getOpType());
     match(tc_RELOP);
-    parseSimpleExpression();
+    SymbolTableEntry* expression = parseSimpleExpression();
+    SymbolTableEntry* temp = newTemp();
+    SymbolTableEntry* settrue = newLabel();
+    SymbolTableEntry* eq = newLabel();
+    m_code->generate(codeop,prevEntry,expression,settrue);
+    m_code->generate(cd_ASSIGN,f,NULL,temp);
+    m_code->generate(cd_GOTO,NULL,NULL,eq);
+    m_code->generate(cd_LABEL,NULL,NULL,settrue);
+    m_code->generate(cd_ASSIGN,t,NULL,temp);
+    m_code->generate(cd_LABEL,NULL,NULL,eq);
+    m_code->generate(cd_EQ,temp,f,eq);
   }
   // else epsilon
   return prevEntry;
@@ -501,11 +524,7 @@ SymbolTableEntry* Parser::parseSimpleExpressionPrime(SymbolTableEntry* prevEntry
   SymbolTableEntry* resultEntry = prevEntry;
   if(isNext(tc_ADDOP))
   {
-    CodeOp co;
-    if(m_currentToken->getOpType() == op_PLUS)
-      co = cd_ADD;
-    else if(m_currentToken->getOpType() == op_MINUS)
-      co = cd_SUB;
+    CodeOp co = opToCode(m_currentToken->getOpType());
     match(tc_ADDOP);
     SymbolTableEntry* term = parseTerm();
     SymbolTableEntry* temp = newTemp();
@@ -601,18 +620,45 @@ SymbolTableEntry* Parser::newLabel()
 {
   std::string name = m_code->newLabel();
   SymbolTableEntry* entry = m_symbolTable->insert(name);
-  m_code->generate(cd_LABEL,NULL,NULL,entry);
   return entry;
 }
 
 CodeOp Parser::opToCode(OpType op)
 {
-  // Implement
+  switch(op) {
+    case op_PLUS:
+     return cd_ADD;
+    case op_MINUS:
+     return cd_SUB;
+    case op_OR:
+     return cd_OR;
+    case op_MULT:
+     return cd_MULT;
+    case op_DIV:
+     return cd_DIV;
+    case op_AND:
+     return cd_AND;
+    case op_DIVIDE:
+     return cd_DIVIDE;
+    case op_MOD:
+     return cd_MOD;
+    case op_LT:
+     return cd_LT;
+    case op_GT:
+     return cd_GT;
+    case op_LE:
+     return cd_LE;
+    case op_GE:
+     return cd_GE;
+    case op_EQ:
+     return cd_EQ;
+    case op_NE:
+     return cd_NE;
+  }
   return cd_NOOP;
 }
 
 Code* Parser::getCode()
 {
-  // Implement
-  return NULL;
+  return m_code;
 }
