@@ -376,11 +376,11 @@ void Parser::parseStatement()
     parseExpression();
     match(tc_THEN);                  Recover(statementSync);
     parseStatement();
+    SymbolTableEntry* jump = newLabel();
+    m_code->generate(cd_GOTO, NULL, NULL,jump);
     match(tc_ELSE);                  Recover(statementSync);
     m_code->generate(cd_LABEL, NULL, NULL, newLabel());
     parseStatement();
-    SymbolTableEntry* jump = newLabel();
-    m_code->generate(cd_GOTO, NULL, NULL,jump);
     m_code->generate(cd_LABEL, NULL, NULL, jump);
   }
   else if(isNext(tc_WHILE))
