@@ -12,8 +12,8 @@ def testprog(progname):
   correct = (correct.replace("TacInt. Version (1.0)","").strip())
   return (output,correct)
 
-#progs = ["code_and","code_func","code_while", "code_fact"]
-progs = ["code_if"]
+#progs = ["code_func","code_while", "code_fact"]
+progs = ["code_if","code_and"]
 
 
 print "TESTING...\n"

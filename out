@@ -8,14 +8,15 @@ example:    ASSIGN              0                             i
             ASSIGN              0                            t1
               GOTO                                         lab4
    lab3:    ASSIGN              1                            t1
-   lab4:       VAR                                           t2
+   lab4:        EQ             t1              0           lab4
+               VAR                                           t2
                 GT              j              5           lab5
             ASSIGN              0                            t2
               GOTO                                         lab6
    lab5:    ASSIGN              1                            t2
-   lab6:       VAR                                           t3
+   lab6:        EQ             t2              0           lab6
+               VAR                                           t3
                AND             t1             t2             t3
-                EQ             t3              0           lab2
                VAR                                           t4
                ADD              j              1             t4
             ASSIGN             t4                             j

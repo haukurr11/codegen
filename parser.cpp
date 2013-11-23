@@ -372,14 +372,18 @@ void Parser::parseStatement()
   }
   else if(isNext(tc_IF))
   {
+    SymbolTableEntry *f = m_symbolTable->lookup(CodeFalse);
+    SymbolTableEntry *t = m_symbolTable->lookup(CodeTrue);
+    SymbolTableEntry* jump = newLabel();
+    SymbolTableEntry* label = newLabel();
     match(tc_IF);
-    parseExpression();
+    SymbolTableEntry* expression = parseExpression();
+    m_code->generate(cd_EQ, expression, f,label);
     match(tc_THEN);                  Recover(statementSync);
     parseStatement();
-    SymbolTableEntry* jump = newLabel();
     m_code->generate(cd_GOTO, NULL, NULL,jump);
     match(tc_ELSE);                  Recover(statementSync);
-    m_code->generate(cd_LABEL, NULL, NULL, newLabel());
+    m_code->generate(cd_LABEL, NULL, NULL, label);
     parseStatement();
     m_code->generate(cd_LABEL, NULL, NULL, jump);
   }
@@ -493,7 +497,7 @@ SymbolTableEntry* Parser::parseExpressionPrime(SymbolTableEntry* prevEntry)
     m_code->generate(cd_LABEL,NULL,NULL,settrue);
     m_code->generate(cd_ASSIGN,t,NULL,temp);
     m_code->generate(cd_LABEL,NULL,NULL,eq);
-    m_code->generate(cd_EQ,temp,f,eq);
+    //m_code->generate(cd_EQ,temp,f,eq);
     return temp;
   }
   // else epsilon
