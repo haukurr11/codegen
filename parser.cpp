@@ -366,14 +366,14 @@ void Parser::parseStatementListPrime()
 
 void Parser::parseStatement()
 {
+  SymbolTableEntry *f = m_symbolTable->lookup(CodeFalse);
+  SymbolTableEntry *t = m_symbolTable->lookup(CodeTrue);
   if(isNext(tc_BEGIN))
   {
     parseCompoundStatement();
   }
   else if(isNext(tc_IF))
   {
-    SymbolTableEntry *f = m_symbolTable->lookup(CodeFalse);
-    SymbolTableEntry *t = m_symbolTable->lookup(CodeTrue);
     SymbolTableEntry* jump = newLabel();
     SymbolTableEntry* label = newLabel();
     match(tc_IF);
@@ -390,9 +390,15 @@ void Parser::parseStatement()
   else if(isNext(tc_WHILE))
   {
     match(tc_WHILE);
-    parseExpression();
+    SymbolTableEntry* label = newLabel();
+    SymbolTableEntry* jump = newLabel();
+    m_code->generate(cd_LABEL,NULL,NULL,label);
+    SymbolTableEntry* expression = parseExpression();
     match(tc_DO);                  Recover(statementSync);
+    m_code->generate(cd_EQ,expression,f,jump);
     parseStatement();
+    m_code->generate(cd_GOTO,NULL,NULL,label);
+    m_code->generate(cd_LABEL,NULL,NULL,jump);
   }
   else //(isNext(tc_ID))
   {
