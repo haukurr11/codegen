@@ -13,6 +13,7 @@ example:    ASSIGN              1                             i
    lab2:        EQ             t2              0           lab2
                VAR                                           t3
               MULT              j              3             t3
+                EQ             t3              0              0
                VAR                                           t4
                SUB              1             t3             t4
             ASSIGN             t4                             i

@@ -546,11 +546,15 @@ SymbolTableEntry* Parser::parseTermPrime(SymbolTableEntry* prevEntry)
 {
   if(isNext(tc_MULOP))
   {
+    SymbolTableEntry *f = m_symbolTable->lookup(CodeFalse);
+    SymbolTableEntry *t = m_symbolTable->lookup(CodeTrue);
+    CodeOp op = opToCode(m_currentToken->getOpType());
     match(tc_MULOP);
     SymbolTableEntry* factor = parseFactor();
     parseTermPrime(factor);
     SymbolTableEntry* temp = newTemp();
-    m_code->generate(cd_MULT,prevEntry,factor,temp);
+    m_code->generate(op,prevEntry,factor,temp);
+    m_code->generate(cd_EQ,temp,f,f);
     prevEntry = temp;
   }
   // else epsilon

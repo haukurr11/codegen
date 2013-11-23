@@ -1,4 +1,5 @@
 import os
+import sys
 
 def testprog(progname):
   os.system('./codegen < testcode/' + progname
@@ -11,20 +12,19 @@ def testprog(progname):
   correct = (correct.replace("TacInt. Version (1.0)","").strip())
   return (output,correct)
 
-#progs = ["code_and","code_func","code_while", "code_fact","code_if"]
+#progs = ["code_and","code_func","code_while", "code_fact"]
 progs = ["code_if"]
 
 
 print "TESTING...\n"
 for prog in progs:
-  print "Testing " + prog + "..."
+  sys.stdout.write("Testing " + prog + "...")
   result = testprog(prog)
   if result[0] == result[1]:
-     print "test PASSED: " + prog
+     print "PASSED"
   else:
-     print "test FAILED!"
+     print "FAILED!"
      print "correct output:\n" \
            + str(result[1]) \
            + "\nreceived output:\n" \
            + str(result[0])
-  print "\n"

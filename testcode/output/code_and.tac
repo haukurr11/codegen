@@ -10,7 +10,7 @@ example:    ASSIGN              0                             i
    lab1:    ASSIGN              1                            t1
    lab2:        EQ             t1              0           lab2
                VAR                                           t2
-                GT              j              5           lab3
+                GT              j              8           lab3
             ASSIGN              0                            t2
               GOTO                                         lab4
    lab3:    ASSIGN              1                            t2
@@ -20,11 +20,11 @@ example:    ASSIGN              0                             i
                VAR                                           t4
                ADD              j              1             t4
             ASSIGN             t4                             j
-   lab5:       VAR                                           t5
+              GOTO                                         lab5
+   lab6:       VAR                                           t5
                SUB              i              1             t5
             ASSIGN             t5                             i
-              GOTO                                         lab6
-   lab6:    APARAM                                            i
+   lab5:    APARAM                                            i
               CALL        writeln                              
             APARAM                                            j
               CALL        writeln                              
