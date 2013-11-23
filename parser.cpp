@@ -494,6 +494,7 @@ SymbolTableEntry* Parser::parseExpressionPrime(SymbolTableEntry* prevEntry)
     m_code->generate(cd_ASSIGN,t,NULL,temp);
     m_code->generate(cd_LABEL,NULL,NULL,eq);
     m_code->generate(cd_EQ,temp,f,eq);
+    return temp;
   }
   // else epsilon
   return prevEntry;
