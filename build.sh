@@ -1,4 +1,4 @@
 flex compiler.lex
 g++ *.cpp -o codegen -g
-./codegen < testcode/code_while.prg
+./codegen < testcode/code_func.prg
 python tests.py

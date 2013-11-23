@@ -182,8 +182,8 @@ void Parser::parseProgram()
   match(tc_SEMICOL);                Recover(programSync);
   parseDeclarations();
   m_code->generate(cd_GOTO,NULL,NULL,pname);
-  m_code->generate(cd_LABEL,NULL,NULL,pname);
   parseSubprogramDeclarations();
+  m_code->generate(cd_LABEL,NULL,NULL,pname);
   parseCompoundStatement();
   m_code->generate(cd_RETURN,NULL,NULL,NULL);
   match(tc_DOT);                  Recover(programSync);
@@ -191,8 +191,8 @@ void Parser::parseProgram()
 
 void Parser::parseIdentifierList(EntryList& idList)
 {
-  match(tc_ID);                  Recover(identifierListSync);
   SymbolTableEntry* entry = m_currentToken->getSymTabEntry();
+  match(tc_ID);                  Recover(identifierListSync);
   idList.push_back(entry);
   parseIdentifierListPrime(idList);
 }
@@ -202,8 +202,8 @@ void Parser::parseIdentifierListPrime(EntryList& idList)
   if(isNext(tc_COMMA))
   {
     match(tc_COMMA);
-    match(tc_ID);                Recover(identifierListSync);
     SymbolTableEntry* entry = m_currentToken->getSymTabEntry();
+    match(tc_ID);                Recover(identifierListSync);
     idList.push_back(entry);
     parseIdentifierListPrime(idList);
   }
@@ -274,6 +274,7 @@ void Parser::parseSubprogramDeclaration()
   parseSubprogramHead();
   parseDeclarations();
   parseCompoundStatement();
+  m_code->generate(cd_RETURN,NULL,NULL,NULL);
 }
 
 void Parser::parseSubprogramHead()
@@ -281,6 +282,9 @@ void Parser::parseSubprogramHead()
   if(isNext(tc_FUNCTION))
   {
     match(tc_FUNCTION);
+    SymbolTableEntry* name = m_symbolTable->
+      insert(m_currentToken->getSymTabEntry()->lexeme);
+    m_code->generate(cd_LABEL,NULL,NULL,name);
     match(tc_ID);                Recover(subProgramHeadSync);
     parseArguments();
     match(tc_COLON);              Recover(subProgramHeadSync);
@@ -290,6 +294,10 @@ void Parser::parseSubprogramHead()
   else
   {
     match(tc_PROCEDURE);            Recover(subProgramHeadSync);
+    SymbolTableEntry* name = m_symbolTable->
+                             insert(m_currentToken->
+                                    getSymTabEntry()->lexeme);
+    m_code->generate(cd_LABEL,NULL,NULL,name);
     match(tc_ID);                Recover(subProgramHeadSync);
     parseArguments();
     match(tc_SEMICOL);              Recover(subProgramHeadSync);
@@ -314,6 +322,7 @@ void Parser::parseParameterList()
   match(tc_COLON);                Recover(parameterListSync);
   parseType();
   parseParameterListPrime();
+  m_code->generateFormals(parameters);
 }
 
 void Parser::parseParameterListPrime()
