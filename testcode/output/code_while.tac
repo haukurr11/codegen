@@ -1,5 +1,5 @@
-               VAR                                            j
                VAR                                            i
+               VAR                                            j
               GOTO                                      example
 example:    ASSIGN              0                             i
             ASSIGN              1                             j

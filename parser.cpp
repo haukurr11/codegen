@@ -217,11 +217,11 @@ void Parser::parseDeclarations()
   {
     match(tc_VAR);
     parseIdentifierList(variables);
+    m_code->generateVariables(variables);
     match(tc_COLON);              RecoverReturn(declarationsSync);
     parseType();
     match(tc_SEMICOL);              Recover(declarationsSync);
     parseDeclarations();
-    m_code->generateVariables(variables);
   }
   // else epsilon
 }
@@ -318,11 +318,12 @@ void Parser::parseArguments()
 void Parser::parseParameterList()
 {
   EntryList parameters;
+  SymbolTableEntry* entry = new SymbolTableEntry();
   parseIdentifierList(parameters);
   match(tc_COLON);                Recover(parameterListSync);
   parseType();
-  parseParameterListPrime();
   m_code->generateFormals(parameters);
+  parseParameterListPrime();
 }
 
 void Parser::parseParameterListPrime()
@@ -332,6 +333,7 @@ void Parser::parseParameterListPrime()
   {
     match(tc_SEMICOL);
     parseIdentifierList(parameters);
+    m_code->generateFormals(parameters);
     match(tc_COLON);              Recover(parameterListSync);
     parseType();
     parseParameterListPrime();

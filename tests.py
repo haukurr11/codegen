@@ -12,8 +12,7 @@ def testprog(progname):
   correct = (correct.replace("TacInt. Version (1.0)","").strip())
   return (output,correct)
 
-#progs = ["code_func", "code_fact"]
-progs = ["code_if","code_and","code_while"]
+progs = ["code_if","code_and","code_while","code_func","code_fact"]
 
 
 print "TESTING...\n"
@@ -21,7 +20,7 @@ for prog in progs:
   sys.stdout.write("Testing " + prog + "...")
   result = testprog(prog)
   if result[0] == result[1]:
-     print "PASSED"
+     print "PASSED (" + ",".join(result[0].split("\n")) + ")"
   else:
      print "FAILED!"
      print "correct output:\n" \
