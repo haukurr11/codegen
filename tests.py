@@ -1,7 +1,7 @@
 import os
 import sys
 
-def testprog(progname):
+def default_test(progname):
   os.system('./codegen < testcode/' + progname
           + '.prg > testcode/output/' + progname + '.tac')
   output = os.popen('java -jar tac/JTacInt.jar testcode/output/' 
@@ -14,11 +14,34 @@ def testprog(progname):
 
 progs = ["code_if","code_and","code_while","code_func","code_fact"]
 
-
-print "TESTING...\n"
+print "TESTING DEFAULT PROGRAMS...\n"
 for prog in progs:
   sys.stdout.write("Testing " + prog + "...")
-  result = testprog(prog)
+  result = default_test(prog)
+  if result[0] == result[1]:
+     print "PASSED (" + ",".join(result[0].split("\n")) + ")"
+  else:
+     print "FAILED!"
+     print "correct output:\n" \
+           + str(result[1]) \
+           + "\nreceived output:\n" \
+           + str(result[0])
+
+progs = {"simpleaddition":3}
+def custom_test(progname):
+   correct = progs[progname]
+   os.system('./codegen < testcode/extra/' + progname
+          + '.prg > testcode/output/' + progname + '.tac')
+   output = os.popen('java -jar tac/JTacInt.jar testcode/output/' 
+                    + progname + '.tac').read()
+   output = (output.replace("TacInt. Version (1.0)","").strip())
+   return (str(output),str(correct))
+
+
+print "TESTING CUSTOM PROGRAMS...\n"
+for prog in progs:
+  sys.stdout.write("Testing " + prog + "...")
+  result = custom_test(prog)
   if result[0] == result[1]:
      print "PASSED (" + ",".join(result[0].split("\n")) + ")"
   else:
