@@ -3,37 +3,37 @@
               GOTO                                      example
    fact:    FPARAM                                            n
                VAR                                            k
-               VAR                                           t1
-                LT              n              1           lab3
-            ASSIGN              0                            t1
-              GOTO                                         lab4
-   lab3:    ASSIGN              1                            t1
-   lab4:        EQ             t1              0           lab2
+               VAR                                           t0
+                LT              n              1           lab2
+            ASSIGN              0                            t0
+              GOTO                                         lab3
+   lab2:    ASSIGN              1                            t0
+   lab3:        EQ             t0              0           lab1
             ASSIGN              1                          fact
-              GOTO                                         lab1
-   lab2:       VAR                                           t2
-               SUB              n              1             t2
-            APARAM                                           t2
+              GOTO                                         lab0
+   lab1:       VAR                                           t1
+               SUB              n              1             t1
+            APARAM                                           t1
               CALL           fact                              
             ASSIGN           fact                             k
-               VAR                                           t3
-              MULT              n              k             t3
-            ASSIGN             t3                          fact
-   lab1:    RETURN                                             
+               VAR                                           t2
+              MULT              n              k             t2
+            ASSIGN             t2                          fact
+   lab0:    RETURN                                             
 example:    ASSIGN              5                             j
-   lab5:       VAR                                           t4
-                GT              j              0           lab7
-            ASSIGN              0                            t4
-              GOTO                                         lab8
-   lab7:    ASSIGN              1                            t4
-   lab8:        EQ             t4              0           lab6
+   lab4:       VAR                                           t3
+                GT              j              0           lab6
+            ASSIGN              0                            t3
+              GOTO                                         lab7
+   lab6:    ASSIGN              1                            t3
+   lab7:        EQ             t3              0           lab5
             APARAM                                            j
               CALL           fact                              
             ASSIGN           fact                             n
             APARAM                                            n
               CALL        writeln                              
-               VAR                                           t5
-               SUB              j              1             t5
-            ASSIGN             t5                             j
-              GOTO                                         lab5
-   lab6:    RETURN                                             
+               VAR                                           t4
+               SUB              j              1             t4
+            ASSIGN             t4                             j
+              GOTO                                         lab4
+   lab5:    RETURN                                             

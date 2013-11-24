@@ -212,9 +212,9 @@ void Parser::parseIdentifierListPrime(EntryList& idList)
 
 void Parser::parseDeclarations()
 {
-  EntryList variables;
   if(isNext(tc_VAR))
   {
+    EntryList variables;
     match(tc_VAR);
     parseIdentifierList(variables);
     m_code->generateVariables(variables);
@@ -282,8 +282,8 @@ void Parser::parseSubprogramHead()
   if(isNext(tc_FUNCTION))
   {
     match(tc_FUNCTION);
-    SymbolTableEntry* name = m_symbolTable->
-      insert(m_currentToken->getSymTabEntry()->lexeme);
+    SymbolTableEntry* token = m_currentToken->getSymTabEntry();
+    SymbolTableEntry* name = m_symbolTable->insert(token->lexeme);
     m_code->generate(cd_LABEL,NULL,NULL,name);
     match(tc_ID);                Recover(subProgramHeadSync);
     parseArguments();
@@ -294,9 +294,8 @@ void Parser::parseSubprogramHead()
   else
   {
     match(tc_PROCEDURE);            Recover(subProgramHeadSync);
-    SymbolTableEntry* name = m_symbolTable->
-                             insert(m_currentToken->
-                                    getSymTabEntry()->lexeme);
+    SymbolTableEntry* token = m_currentToken->getSymTabEntry();
+    SymbolTableEntry* name = m_symbolTable->insert(token->lexeme);
     m_code->generate(cd_LABEL,NULL,NULL,name);
     match(tc_ID);                Recover(subProgramHeadSync);
     parseArguments();
@@ -318,7 +317,6 @@ void Parser::parseArguments()
 void Parser::parseParameterList()
 {
   EntryList parameters;
-  SymbolTableEntry* entry = new SymbolTableEntry();
   parseIdentifierList(parameters);
   match(tc_COLON);                Recover(parameterListSync);
   parseType();
@@ -328,9 +326,9 @@ void Parser::parseParameterList()
 
 void Parser::parseParameterListPrime()
 {
-  EntryList parameters;
   if(isNext(tc_SEMICOL))
   {
+    EntryList parameters;
     match(tc_SEMICOL);
     parseIdentifierList(parameters);
     m_code->generateFormals(parameters);
@@ -514,8 +512,7 @@ SymbolTableEntry* Parser::parseExpressionPrime(SymbolTableEntry* prevEntry)
     m_code->generate(cd_LABEL,NULL,NULL,settrue);
     m_code->generate(cd_ASSIGN,t,NULL,temp);
     m_code->generate(cd_LABEL,NULL,NULL,eq);
-    //m_code->generate(cd_EQ,temp,f,eq);
-    return temp;
+    prevEntry = temp;
   }
   // else epsilon
   return prevEntry;

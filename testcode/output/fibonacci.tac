@@ -4,35 +4,35 @@ fibonacci:    FPARAM                                            n
                VAR                                     firstval
                VAR                                    secondval
             ASSIGN              0                     fibonacci
-               VAR                                           t1
-                EQ              n              1           lab3
+               VAR                                           t0
+                EQ              n              1           lab2
+            ASSIGN              0                            t0
+              GOTO                                         lab3
+   lab2:    ASSIGN              1                            t0
+   lab3:       VAR                                           t1
+                EQ              n              2           lab4
             ASSIGN              0                            t1
-              GOTO                                         lab4
-   lab3:    ASSIGN              1                            t1
-   lab4:       VAR                                           t2
-                EQ              n              2           lab5
-            ASSIGN              0                            t2
-              GOTO                                         lab6
-   lab5:    ASSIGN              1                            t2
-   lab6:       VAR                                           t3
-                OR             t1             t2             t3
-                EQ             t3              0           lab2
+              GOTO                                         lab5
+   lab4:    ASSIGN              1                            t1
+   lab5:       VAR                                           t2
+                OR             t0             t1             t2
+                EQ             t2              0           lab1
             ASSIGN              1                     fibonacci
-              GOTO                                         lab1
-   lab2:       VAR                                           t4
-               SUB              n              1             t4
-            APARAM                                           t4
+              GOTO                                         lab0
+   lab1:       VAR                                           t3
+               SUB              n              1             t3
+            APARAM                                           t3
               CALL      fibonacci                              
             ASSIGN      fibonacci                      firstval
-               VAR                                           t5
-               SUB              n              2             t5
-            APARAM                                           t5
+               VAR                                           t4
+               SUB              n              2             t4
+            APARAM                                           t4
               CALL      fibonacci                              
             ASSIGN      fibonacci                     secondval
-               VAR                                           t6
-               ADD       firstval      secondval             t6
-            ASSIGN             t6                     fibonacci
-   lab1:    RETURN                                             
+               VAR                                           t5
+               ADD       firstval      secondval             t5
+            ASSIGN             t5                     fibonacci
+   lab0:    RETURN                                             
 example:    APARAM                                           20
               CALL      fibonacci                              
             ASSIGN      fibonacci                        result

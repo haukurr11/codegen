@@ -3,8 +3,8 @@
               GOTO                                      example
 example:    ASSIGN              3                             i
             ASSIGN              2                             j
-               VAR                                           t1
-              MULT              i              j             t1
-            APARAM                                           t1
+               VAR                                           t0
+              MULT              i              j             t0
+            APARAM                                           t0
               CALL        writeln                              
             RETURN                                             

@@ -3,72 +3,72 @@
               GOTO                                      example
 example:    ASSIGN              0                             i
             ASSIGN              6                             j
-               VAR                                           t1
-                EQ              i              0           lab3
+               VAR                                           t0
+                EQ              i              0           lab2
+            ASSIGN              0                            t0
+              GOTO                                         lab3
+   lab2:    ASSIGN              1                            t0
+   lab3:       VAR                                           t1
+                GT              j              6           lab4
             ASSIGN              0                            t1
-              GOTO                                         lab4
-   lab3:    ASSIGN              1                            t1
-   lab4:       VAR                                           t2
-                GT              j              6           lab5
-            ASSIGN              0                            t2
-              GOTO                                         lab6
-   lab5:    ASSIGN              1                            t2
-   lab6:       VAR                                           t3
-                OR             t1             t2             t3
-                EQ             t3              0           lab2
+              GOTO                                         lab5
+   lab4:    ASSIGN              1                            t1
+   lab5:       VAR                                           t2
+                OR             t0             t1             t2
+                EQ             t2              0           lab1
             ASSIGN           1337                             j
-              GOTO                                         lab1
-   lab2:       VAR                                           t4
-            UMINUS              1                            t4
-            ASSIGN             t4                             j
-   lab1:       VAR                                           t5
-                EQ              j           1336           lab9
-            ASSIGN              0                            t5
+              GOTO                                         lab0
+   lab1:       VAR                                           t3
+            UMINUS              1                            t3
+            ASSIGN             t3                             j
+   lab0:       VAR                                           t4
+                EQ              j           1336           lab8
+            ASSIGN              0                            t4
+              GOTO                                         lab9
+   lab8:    ASSIGN              1                            t4
+   lab9:       VAR                                           t5
+               NOT             t4                            t5
+                EQ             t5              0           lab7
+               VAR                                           t6
+               ADD              j              1             t6
+            ASSIGN             t6                             j
+              GOTO                                         lab6
+   lab7:    ASSIGN              0                             j
+   lab6:       VAR                                           t7
+                NE              j              0          lab12
+            ASSIGN              0                            t7
+              GOTO                                        lab13
+  lab12:    ASSIGN              1                            t7
+  lab13:        EQ             t7              0          lab11
+               VAR                                           t8
+               ADD              j              2             t8
+            ASSIGN             t8                             j
               GOTO                                        lab10
-   lab9:    ASSIGN              1                            t5
-  lab10:       VAR                                           t6
-               NOT             t5                            t6
-                EQ             t6              0           lab8
-               VAR                                           t7
-               ADD              j              1             t7
-            ASSIGN             t7                             j
-              GOTO                                         lab7
-   lab8:    ASSIGN              0                             j
-   lab7:       VAR                                           t8
-                NE              j              0          lab13
-            ASSIGN              0                            t8
-              GOTO                                        lab14
-  lab13:    ASSIGN              1                            t8
-  lab14:        EQ             t8              0          lab12
-               VAR                                           t9
-               ADD              j              2             t9
-            ASSIGN             t9                             j
-              GOTO                                        lab11
-  lab12:    ASSIGN              1                             j
-  lab11:       VAR                                          t10
-                LE              j           1339          lab17
-            ASSIGN              0                           t10
-              GOTO                                        lab18
-  lab17:    ASSIGN              1                           t10
-  lab18:        EQ            t10              0          lab16
+  lab11:    ASSIGN              1                             j
+  lab10:       VAR                                           t9
+                LE              j           1339          lab16
+            ASSIGN              0                            t9
+              GOTO                                        lab17
+  lab16:    ASSIGN              1                            t9
+  lab17:        EQ             t9              0          lab15
             ASSIGN              2                             j
-              GOTO                                        lab15
-  lab16:       VAR                                          t11
-               ADD              j              5            t11
-               VAR                                          t12
-            DIVIDE            t11              2            t12
-            ASSIGN            t12                             j
-  lab15:       VAR                                          t13
-                GE              j            600          lab21
-            ASSIGN              0                           t13
-              GOTO                                        lab22
-  lab21:    ASSIGN              1                           t13
-  lab22:        EQ            t13              0          lab20
-               VAR                                          t14
-              MULT              j              8            t14
-            ASSIGN            t14                             j
-              GOTO                                        lab19
-  lab20:    ASSIGN              3                             j
-  lab19:    APARAM                                            j
+              GOTO                                        lab14
+  lab15:       VAR                                          t10
+               ADD              j              5            t10
+               VAR                                          t11
+            DIVIDE            t10              2            t11
+            ASSIGN            t11                             j
+  lab14:       VAR                                          t12
+                GE              j            600          lab20
+            ASSIGN              0                           t12
+              GOTO                                        lab21
+  lab20:    ASSIGN              1                           t12
+  lab21:        EQ            t12              0          lab19
+               VAR                                          t13
+              MULT              j              8            t13
+            ASSIGN            t13                             j
+              GOTO                                        lab18
+  lab19:    ASSIGN              3                             j
+  lab18:    APARAM                                            j
               CALL        writeln                              
             RETURN                                             

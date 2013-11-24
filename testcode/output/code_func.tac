@@ -3,15 +3,15 @@
               GOTO                                         test
     add:    FPARAM                                            x
             FPARAM                                            y
-               VAR                                           t1
-               ADD              x              y             t1
-            ASSIGN             t1                           add
+               VAR                                           t0
+               ADD              x              y             t0
+            ASSIGN             t0                           add
             RETURN                                             
    mult:    FPARAM                                            x
             FPARAM                                            y
-               VAR                                           t2
-              MULT              x              y             t2
-            ASSIGN             t2                          mult
+               VAR                                           t1
+              MULT              x              y             t1
+            ASSIGN             t1                          mult
             RETURN                                             
 toscreen:    FPARAM                                            x
                VAR                                            y

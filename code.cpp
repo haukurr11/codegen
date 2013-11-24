@@ -56,7 +56,7 @@ void Code::generate(CodeOp op, SymbolTableEntry* arg1, SymbolTableEntry* arg2, S
 void Code::generateCall(SymbolTableEntry* entry, EntryList& eList)
 {
   EntryList::iterator it;
-  for(it = eList.begin(); it != eList.end(); ++it)
+  for(it = eList.begin(); it != eList.end(); it++)
     generate(cd_APARAM,NULL,NULL,*it);
   generate(cd_CALL,entry,NULL,NULL);
 }
@@ -64,37 +64,37 @@ void Code::generateCall(SymbolTableEntry* entry, EntryList& eList)
 void Code::generateFormals(EntryList& entrylist)
 {
   EntryList::iterator it;
-  for(it = entrylist.begin(); it != entrylist.end(); ++it)
+  for(it = entrylist.begin(); it != entrylist.end(); it++)
     generate(cd_FPARAM,NULL,NULL,*it);
 }
 
 void Code::generateVariables(EntryList& entrylist)
 {
   EntryList::iterator it;
-  for(it = entrylist.begin(); it != entrylist.end(); ++it)
+  for(it = entrylist.begin(); it != entrylist.end(); it++)
     generate(cd_VAR,NULL,NULL,*it);
 }
 
 std::string Code::newLabel()
 {
-  m_labelCounter++;
   std::stringstream ss;
   ss << CodeLabelPrefix << m_labelCounter;
+  m_labelCounter++;
   return ss.str();
 }
 
 std::string Code::newTemp()
 {
-  m_tempCounter++;
   std::stringstream ss;
   ss << CodeTempVarPrefix << m_tempCounter;
+  m_tempCounter++;
   return ss.str();
 }
 
 void Code::print()
 {
   QuadrupleList::iterator it;
-  for(it = m_qList.begin(); it != m_qList.end(); ++it)
+  for(it = m_qList.begin(); it != m_qList.end(); it++)
     it->print(*it);
 }
 
