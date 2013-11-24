@@ -31,6 +31,7 @@ progs = {"simpleaddition":3,
          "simplemultiplication":6,
          "operatortest" : 5376,
          "mod" : 22,
+         "example" : 4,
          "real" : 11.1,
          "fibonacci" : 6765 }
 def custom_test(progname):
