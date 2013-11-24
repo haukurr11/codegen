@@ -15,6 +15,7 @@ Parser::~Parser()
 {
   delete m_lexan;
   delete m_symbolTable;
+  delete m_code;
 }
 
 void Parser::parse()
@@ -435,8 +436,8 @@ void Parser::parseStatementPrime(SymbolTableEntry* prevEntry)
 SymbolTableEntry* Parser::parseVariable()
 {
   match(tc_ID);
-  parseVariablePrime(NULL);
-  return NULL;
+  SymbolTableEntry* entry = parseVariablePrime(NULL);
+  return entry;
 }
 
 SymbolTableEntry* Parser::parseVariablePrime(SymbolTableEntry* prevEntry)
@@ -444,7 +445,7 @@ SymbolTableEntry* Parser::parseVariablePrime(SymbolTableEntry* prevEntry)
   if(isNext(tc_LBRACKET))
   {
     match(tc_LBRACKET);
-    parseExpression();
+    prevEntry = parseExpression();
     match(tc_RBRACKET);
   }
   // else epsilon
@@ -526,7 +527,6 @@ SymbolTableEntry* Parser::parseSimpleExpression()
     parseSign();
     SymbolTableEntry* term = parseTerm();
     resultEntry = newTemp();
-    CodeOp co;
     m_code->generate(cd_UMINUS,term,NULL,resultEntry);
     parseSimpleExpressionPrime(resultEntry);
   }
